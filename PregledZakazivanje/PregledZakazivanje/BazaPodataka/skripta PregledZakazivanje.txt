@@ -1,0 +1,91 @@
+
+
+create table Adresa(
+	id int not null,
+	ulica varchar(50),
+	broj varchar(5),
+	grad varchar(30),
+	drzava varchar(50),
+	obrisano bit,
+	constraint primaryKey_Adresa primary key(id)
+);
+
+
+
+create table DomZdravlja(
+	sifra int not null,
+	nazivInstitucije varchar(50),
+	fkAdresa int not null,
+	obrisano bit,
+	constraint primaryKey_DomZdravlja primary key(sifra),
+	constraint foreignKey_DomZdravlja_Adresa foreign key(fkAdresa) references Adresa(id)
+);
+
+
+
+create table Korisnik(
+	ime varchar(30),
+	prezime varchar(30),
+	jmbg varchar(13) not null,
+	email varchar(50),
+	fkAdresa int not null,
+	pol varchar(6),
+	lozinka varchar(30),
+	tipKorisnika varchar(20),
+	obrisano bit,
+	fkDomZdravlja int,
+	constraint primaryKey_Korisnik primary key(jmbg),
+	constraint foreignKey_Korisnik_Adresa foreign key(fkAdresa) references Adresa(id),
+	constraint foreignKey_Korisnik_DomZdravlja foreign key(fkDomZdravlja) references DomZdravlja(sifra)
+	
+);
+
+create table Termin(
+
+	sifra int not null,
+	fkLekar varchar(13) not null,
+	fkPacijent varchar(13),
+	datumTermina varchar(50),
+	statusTermina varchar(20),
+	obrisano bit,
+	constraint primaryKey_Termin primary key(sifra),
+	constraint foreignKey_Termin_Korisnik1 foreign key(fkLekar) references Korisnik(jmbg),
+	constraint foreignKey_Termin_Korisnik2 foreign key(fkPacijent) references Korisnik(jmbg)
+	
+);
+
+create table Dezurstva(
+	fkLekar varchar(255) not null,
+	pocetak varchar(50),
+	kraj varchar(50),
+	constraint foreignKey_Dezurstva_Korisnik1 foreign key(fkLekar) references Korisnik(jmbg)
+);
+create table Terapija(
+
+	sifra int not null,
+	fkLekar varchar(13) not null,
+	fkPacijent varchar(13) not null,
+	opisTerapije varchar(1000),
+	obrisano bit,
+	constraint primaryKey_Terapija primary key(sifra),
+	constraint foreignKey_Terapija_Korisnik1 foreign key(fkLekar) references Korisnik(jmbg),
+	constraint foreignKey_Terapija_Korisnik2 foreign key(fkPacijent) references Korisnik(jmbg)
+);
+
+
+
+insert into Adresa values(1, 'Ravanicka', '55A', 'Novi Sad', 'Srbija', 0);
+insert into Adresa values(2, 'Mihajla Pupina', '14', 'Novi Sad', 'Srbija', 0);
+insert into Adresa values(3, 'Bulevar Vojvode Stepe', '23', 'Novi Sad', 'Srbija', 0);
+insert into Adresa values(4, 'Miroslava Hajdukovica', '33', 'Beograd', 'Srbija', 0);
+insert into Adresa values(5, 'Solunska', '43', 'Beograd', 'Srbija', 0);
+insert into Adresa values(6, 'Knez Mihajlova', '12', 'Beograd', 'Srbija', 0);
+insert into DomZdravlja values(1, 'Dom zdravlja 1 - NS', 1, 0);
+insert into DomZdravlja values(2, 'Dom zdravlja 1 - BG', 4, 0);
+insert into Korisnik values('Igor', 'Igorovic', '11', 'ig.email90@gmail.com', 2, 'muski', '11', 'lekar', 0, 1);
+insert into Korisnik values('Milos', 'Misic', '22', 'm.milos60@gmail.com', 3, 'muski', '22', 'pacijent', 0, null);
+insert into Korisnik values('Mira', 'Mihajlovic', '33', 'mira.mih@gmail.com', 5, 'zenski', '33', 'administrator', 0, null);
+insert into Korisnik values('Svetlana', 'Svejic', '44', 's.svejic@gmail.com', 6, 'zenski', '44', 'lekar', 0, 2);
+
+
+
